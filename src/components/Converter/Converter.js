@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
+import { useDispatch, useSelector } from "react-redux";
 import {
   Box,
   TextField,
@@ -9,34 +10,73 @@ import {
   MenuItem,
 } from "@mui/material";
 
+import {
+  getRate,
+  setCurrencyFrom,
+  setCurrencyTo,
+  setAmount,
+  setAmountFrom,
+  getCurrenciesList,
+} from "../../store/actionCreators/converterAC";
+
 import styles from "./Converter.module.scss";
 import { ReactComponent as Arrows } from "../../assets/svg/arrows.svg";
 
 const Converter = () => {
-  const [currencyFrom, setCurrencyFrom] = useState("USD");
-  const [currencyTo, setCurrencyTo] = useState("UAH");
-  const [amount, setAmount] = useState(0);
+  const currentCurrencyRate = useSelector(
+    ({ converter }) => converter.rates.currentCurrencyRate
+  );
+  const currencyFrom = useSelector((state) => state.converter.currencyFrom);
+  const currencyTo = useSelector((state) => state.converter.currencyTo);
+  const amount = useSelector((state) => state.converter.amount);
+  const amountFrom = useSelector((state) => state.converter.amountFrom);
+  const currencyList = useSelector(({ converter }) => converter.currenciesList);
 
+  const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(getCurrenciesList());
+    dispatch(getRate(currencyFrom, currencyTo));
+  }, []);
+
+  useEffect(() => {
+    dispatch(getRate(currencyFrom, currencyTo));
+  }, [currencyFrom, currencyTo]);
+
+  let toAmount, fromAmount;
+
+  if (amountFrom) {
+    fromAmount = amount;
+    toAmount = (amount * currentCurrencyRate).toFixed(2);
+  } else {
+    toAmount = amount;
+    fromAmount = (amount / currentCurrencyRate).toFixed(2);
+  }
 
   const handleChangeFrom = (event) => {
-    setCurrencyFrom(event.target.value);
+    dispatch(setCurrencyFrom(event.target.value));
   };
   const handleChangeTo = (event) => {
-    setCurrencyTo(event.target.value);
-  };
-  
-  const handleChangeAmount = (value) => {
-    setAmount(value);
+    dispatch(setCurrencyTo(event.target.value));
   };
 
-  console.log('amount', amount);
-
+  const handleChangeFromAmount = (value) => {
+    if (!isNaN(value)) {
+      dispatch(setAmount(value));
+      dispatch(setAmountFrom(true));
+    }
+  };
+  const handleChangeToAmount = (value) => {
+    if (!isNaN(value)) {
+      dispatch(setAmount(value));
+      dispatch(setAmountFrom(false));
+    }
+  };
 
   return (
     <>
       <div className={styles.converterWrapper}>
-          <h1>CURRENCY CONVERTER</h1>
+        <h1 className={styles.converterTitle}>CURRENCY CONVERTER</h1>
         <div className={styles.converterInputsWrapper}>
           <div className={styles.converterInputWrapper}>
             <Box
@@ -51,8 +91,9 @@ const Converter = () => {
                 id="outlined-basic"
                 label="I'm exchange"
                 variant="outlined"
-                onChange={e => handleChangeAmount(e.target.value)}
-                // value={currency === n.name ? value : (value / rate * n.rate).toFixed(2)}
+                onChange={(e) => handleChangeFromAmount(e.target.value)}
+                value={fromAmount}
+                className={styles.inputFrom}
               />
             </Box>
             <Box sx={{ minWidth: 120 }}>
@@ -64,15 +105,19 @@ const Converter = () => {
                   value={currencyFrom}
                   label="Currency from"
                   onChange={handleChangeFrom}
+                  className={styles.inputFrom}
                 >
-                  <MenuItem value={"USD"}>USD</MenuItem>
-                  <MenuItem value={"UAH"}>UAH</MenuItem>
-                  <MenuItem value={"EUR"}>EUR</MenuItem>
+                  {currencyList &&
+                    currencyList.map((currency) => (
+                      <MenuItem key={currency} value={currency}>
+                        {currency}
+                      </MenuItem>
+                    ))}
                 </Select>
               </FormControl>
             </Box>
           </div>
-          <Arrows />
+          <Arrows className={styles.arrows}/>
           <div className={styles.converterInputWrapper}>
             <Box
               component="form"
@@ -86,7 +131,9 @@ const Converter = () => {
                 id="outlined-basic"
                 label="I'll recieve"
                 variant="outlined"
-                onChange={e => handleChangeAmount(e.target.value)}
+                onChange={(e) => handleChangeToAmount(e.target.value)}
+                value={toAmount}
+                className={styles.inputFrom}
               />
             </Box>
             <Box sx={{ minWidth: 120 }}>
@@ -98,10 +145,14 @@ const Converter = () => {
                   value={currencyTo}
                   label="Currency to"
                   onChange={handleChangeTo}
+                  className={styles.inputFrom}
                 >
-                  <MenuItem value={"USD"}>USD</MenuItem>
-                  <MenuItem value={"UAH"}>UAH</MenuItem>
-                  <MenuItem value={"EUR"}>EUR</MenuItem>
+                  {currencyList &&
+                    currencyList.map((currency) => (
+                      <MenuItem key={currency} value={currency}>
+                        {currency}
+                      </MenuItem>
+                    ))}
                 </Select>
               </FormControl>
             </Box>

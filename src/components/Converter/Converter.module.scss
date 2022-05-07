@@ -1,11 +1,31 @@
+.converterWrapper {
+    background-color: rgb(240, 240, 240);
+    padding-bottom: 250px;
+}
+
 .converterInputsWrapper {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
+.converterTitle {
+    text-align: center;
+    margin: 0 auto;
+    padding: 50px 0 30px;
+}
+
 .converterInputWrapper {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.inputFrom {
+    background-color: rgb(255, 247, 212);
+    outline: none;
+}
+
+.arrows {
+    margin-left: 9px;
 }
