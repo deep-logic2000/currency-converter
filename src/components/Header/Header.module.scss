@@ -1,6 +1,11 @@
 .headerWrapper {
   background-color: rgb(231, 244, 245);
   border-bottom: 2px solid rgb(0, 0, 83);
+  width: 100%;
+}
+
+.headerContainer {
+  max-width: 1200px;
 }
 
 .headerTitle {
