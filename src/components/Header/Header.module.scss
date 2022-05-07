@@ -1,0 +1,19 @@
+.headerWrapper {
+  background-color: rgb(231, 244, 245);
+  border-bottom: 2px solid rgb(0, 0, 83);
+}
+
+.headerTitle {
+  padding-top: 30px;
+}
+
+.rateWrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.rateText {
+    margin-left: 30px;
+    font-size: 16px;
+}

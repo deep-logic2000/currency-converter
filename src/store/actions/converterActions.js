@@ -1,0 +1,2 @@
+export const GET_RATE_USD_UAH = 'GET_RATE_USD_UAH';
+export const GET_RATE_EUR_UAH = 'GET_RATE_EUR_UAH';
