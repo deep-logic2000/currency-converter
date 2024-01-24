@@ -2,3 +2,4 @@
 2. Done - 07.05.2022
 3. Task: make currency converter
 4. Deploy: [link](https://currency-converter-steel-three.vercel.app/)
+5. Stack: JS, React, React-redux, Redux-thunk, sass, axios
